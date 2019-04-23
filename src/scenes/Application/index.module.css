@@ -1,0 +1,30 @@
+.header {
+  display: flex;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.2rem;
+}
+
+.control {
+  text-align: right;
+}
+
+.app {
+  margin-bottom: 1rem;
+}
+
+.app-name {
+  text-align: right;
+  font-size: 1.2rem;
+}
+
+.app-path {
+  color: rgb(200, 200, 200);
+}
+
+.no-app {
+  padding-top: 20vh;
+}

@@ -10,7 +10,7 @@ export default [
     component: loadable(() => import('./scenes/Overview/index'))
   },
   {
-    path: '/plan/',
+    path: '/plan',
     exact: false,
     name: 'plan',
     icon: 'schedule',
@@ -18,7 +18,7 @@ export default [
     component: loadable(() => import('./scenes/Plan/index'))
   },
   {
-    path: '/application/',
+    path: '/application',
     exact: false,
     name: 'application',
     icon: 'appstore',
@@ -26,7 +26,7 @@ export default [
     component: loadable(() => import('./scenes/Application/index'))
   },
   {
-    path: '/setting/',
+    path: '/setting',
     exact: false,
     name: 'setting',
     icon: 'setting',

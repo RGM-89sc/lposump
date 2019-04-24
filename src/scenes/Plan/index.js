@@ -1,20 +1,25 @@
 import React, { Component } from 'react';
 import {
-  Row,
-  Col,
   Button,
   Card,
+  Col,
   Empty,
-  Modal,
-  Select,
   Form,
   Input,
-  TimePicker,
   List,
-  message
+  Modal,
+  message,
+  Row,
+  Select,
+  TimePicker,
 } from 'antd';
 import uuid from 'uuid/v4';
 import styles from './index.module.css';
+
+message.config({
+  duration: 2,
+  maxCount: 3,
+});
 
 class Plan extends Component {
   constructor(props) {
@@ -41,6 +46,9 @@ class Plan extends Component {
     window.localStorage.setItem('defaultPlanID', planID);
     this.setState({
       defaultPlanID: planID
+    });
+    setTimeout(() => {
+      this.props.updateDefaultPlan();
     });
   }
 
@@ -104,10 +112,12 @@ class Plan extends Component {
         });
         if (plan.id === that.state.defaultPlanID) {
           window.localStorage.removeItem('defaultPlanID');
+          that.setState({
+            defaultPlanID: ''
+          });
           that.props.defaultPlanHaveBeenDel();
         }
         that.setState({
-          defaultPlanID: '',
           plans
         });
         window.localStorage.setItem('plans', JSON.stringify(plans));
@@ -126,7 +136,7 @@ class Plan extends Component {
           <Col span={12} className={styles.title}>
             <span>默认方案：</span>
             <Select
-              defaultValue={this.state.defaultPlanID}
+              value={this.state.defaultPlanID}
               style={{ width: 120 }}
               onChange={this.setDefaultPlan}>
               {this.state.plans.map(plan => (

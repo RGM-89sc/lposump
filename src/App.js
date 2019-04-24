@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
-import { Layout, Menu, Icon } from 'antd';
+import { Icon, Layout, Menu } from 'antd';
 import routes from './router';
 import styles from './App.module.css';
 
@@ -16,6 +16,7 @@ class App extends Component {
     this.getDefaultPlan = this.getDefaultPlan.bind(this);
     this.defaultPlanHaveBeenDel = this.defaultPlanHaveBeenDel.bind(this);
     this.updateDefaultPlan = this.updateDefaultPlan.bind(this);
+    this.setTimer = this.setTimer.bind(this);
     const defaultPlanID = window.localStorage.getItem('defaultPlanID') || '';
     const plans = JSON.parse(window.localStorage.getItem('plans')) || [];
     const defaultPlan = this.getDefaultPlan(defaultPlanID, plans);
@@ -27,9 +28,13 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.setTimer();
+  }
+
+  setTimer() {
     this.setState({
       timer: setInterval(() => {
-        if (this.state.defaultPlan) {
+        if (!this.state.defaultPlan) {
           clearInterval(this.state.timer);
           return null;
         }
@@ -45,7 +50,7 @@ class App extends Component {
           clearInterval(this.state.timer);
           this.startDefaultPlan();
         }
-      }, 30 * 1000)
+      }, 20 * 1000)
     });
   }
 
@@ -58,6 +63,9 @@ class App extends Component {
     const plans = JSON.parse(window.localStorage.getItem('plans')) || [];
     this.setState({
       defaultPlan: this.getDefaultPlan(defaultPlanID, plans)
+    });
+    setTimeout(() => {
+      this.setTimer();
     });
   }
 
@@ -79,7 +87,7 @@ class App extends Component {
     this.state.defaultPlan.appList.forEach(app => {
       child_process.execFile(JSON.parse(app).path, (error, stdout, stderr) => {
         if (error) {
-          console.log(error);
+          console.log('error:' + error);
         }
       });
     });

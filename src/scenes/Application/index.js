@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Card, Empty, Modal, message } from 'antd';
+import { Button, Card, Col, Empty, Modal, message, Row } from 'antd';
 import styles from './index.module.css';
+
+message.config({
+  duration: 2,
+  maxCount: 3,
+});
 
 const confirm = Modal.confirm;
 

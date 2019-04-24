@@ -21,7 +21,7 @@ function createWindow() {
   } else if (process.env.NODE_ENV === 'prod') { // 生产模式
     win.loadURL(url.format({
       pathname: path.join(__dirname, './build/index.html'),
-      protocol: 'file:'
+      protocol: 'file'
     }));
   } else {
     throw new Error('process.env.ENV is illegal');

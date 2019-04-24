@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Select } from 'antd';
+import { Button, Col, Row, Select } from 'antd';
 import styles from './index.module.css';
 const child_process = window.require('child_process');
 

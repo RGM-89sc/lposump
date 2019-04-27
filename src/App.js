@@ -5,6 +5,7 @@ import { Icon, Layout, Menu } from 'antd';
 import routes from './router';
 import styles from './App.module.css';
 
+const { ipcRenderer } = window.require('electron');
 const child_process = window.require('child_process');
 
 const { Sider, Content } = Layout;
@@ -17,6 +18,13 @@ class App extends Component {
     this.defaultPlanHaveBeenDel = this.defaultPlanHaveBeenDel.bind(this);
     this.updateDefaultPlan = this.updateDefaultPlan.bind(this);
     this.setTimer = this.setTimer.bind(this);
+
+    const autoStart = window.localStorage.getItem('autoStart');
+    if (!autoStart) {  // 如果这个字段没有值
+      ipcRenderer.send('enableAutoStart');
+      window.localStorage.setItem('autoStart', true + '');
+    }
+
     const defaultPlanID = window.localStorage.getItem('defaultPlanID') || '';
     const plans = JSON.parse(window.localStorage.getItem('plans')) || [];
     const defaultPlan = this.getDefaultPlan(defaultPlanID, plans);
@@ -29,6 +37,11 @@ class App extends Component {
 
   componentDidMount() {
     this.setTimer();
+
+    ipcRenderer.send('appStart');
+    ipcRenderer.on('pushPath', (event, arg) => {
+      this.props.history.push(arg);
+    });
   }
 
   setTimer() {
@@ -43,7 +56,7 @@ class App extends Component {
         const mins = now.getMinutes();
         const planTime = this.state.defaultPlan.time.split(':');
         if (hours > parseInt(planTime[0]) || mins > parseInt(planTime[1])) {
-          clearInterval(this.state.timer);
+          return clearInterval(this.state.timer);
         }
         const time = `${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}`;
         if (this.state.defaultPlan.time === time) {
@@ -101,7 +114,7 @@ class App extends Component {
             <Sider theme="light">
               <Menu
                 mode="inline"
-                defaultSelectedKeys={[this.props.location.pathname]}
+                selectedKeys={[this.props.location.pathname]}
                 style={{ height: '100vh' }}>
                 {routes.map((route, index) => (
                   <Menu.Item key={route.path}>

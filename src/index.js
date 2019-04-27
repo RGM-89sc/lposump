@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { LocaleProvider } from 'antd';
@@ -12,9 +12,9 @@ moment.locale('zh-cn');
 
 ReactDOM.render((
   <LocaleProvider locale={zh_CN}>
-    <BrowserRouter>
+    <HashRouter>
       <App />
-    </BrowserRouter>
+    </HashRouter>
   </LocaleProvider>
 ),
   document.getElementById('root'));

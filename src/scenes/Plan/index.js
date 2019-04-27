@@ -17,7 +17,7 @@ import uuid from 'uuid/v4';
 import styles from './index.module.css';
 
 message.config({
-  duration: 2,
+  duration: 1.5,
   maxCount: 3,
 });
 

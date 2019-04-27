@@ -1,6 +1,7 @@
-const { app, BrowserWindow, Menu, Tray } = require('electron');
+const { app, BrowserWindow, Menu, Tray, ipcMain } = require('electron');
 const url = require('url');
 const path = require('path');
+const WinReg = require('winreg');
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
@@ -13,22 +14,22 @@ function createWindow() {
     height: 600,
     show: false,
     autoHideMenuBar: true,
+    icon: './logo.ico',
+    requestedExecutionLevel: "highestAvailable"
   });
 
   // 然后加载应用的入口。
   if (process.env.NODE_ENV === 'dev') { // 开发模式（可以热更新的）
     win.loadURL('http://localhost:3000/');
-  } else if (process.env.NODE_ENV === 'prod') { // 生产模式
+  } else if (process.env.NODE_ENV === 'prod' || !process.env.NODE_ENV) { // 生产模式
     win.loadURL(url.format({
-      pathname: path.join(__dirname, './build/index.html'),
+      pathname: path.join(__dirname, '../build/index.html'),
       protocol: 'file'
     }));
-  } else {
-    throw new Error('process.env.ENV is illegal');
   }
 
   // 打开开发者工具
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 
   // 在加载页面时，渲染进程第一次完成绘制时，会发出 ready-to-show 事件，在此事件后显示窗口将没有视觉闪烁
   win.on('ready-to-show', () => {
@@ -57,27 +58,30 @@ let tray = null;
 app.on('ready', () => {
   createWindow();
 
-  tray = new Tray(path.join(__dirname, './public/favicon.ico'));
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: '设置',
-      click: () => {
-
+  ipcMain.on('appStart', (event, arg) => {
+    tray = new Tray(path.join(__dirname, './logo.ico'));
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: '设置',
+        click: () => {
+          event.sender.send('pushPath', '/setting');
+          win.show();
+        }
+      },
+      {
+        label: '退出',
+        click: () => {
+          win.destroy();
+          app.quit();
+        }
       }
-    },
-    {
-      label: '退出',
-      click: () => {
-        win.destroy();
-        app.quit();
-      }
-    }
-  ]);
-  tray.on('click', () => {
-    win.isVisible() ? win.hide() : win.show();
+    ]);
+    tray.on('click', () => {
+      win.isVisible() ? win.hide() : win.show();
+    });
+    tray.setToolTip('lposump');
+    tray.setContextMenu(contextMenu);
   });
-  tray.setToolTip('lposump');
-  tray.setContextMenu(contextMenu);
 });
 
 // 当全部窗口关闭时退出。
@@ -99,3 +103,41 @@ app.on('activate', () => {
 
 // 在这个文件中，你可以续写应用剩下主进程代码。
 // 也可以拆分成几个文件，然后用 require 导入。
+
+// 获取注册表key
+function getKey() {
+  return new WinReg({
+    hive: WinReg.HKCU, // CurrentUser,
+    key: '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run'
+  });
+}
+
+// 获取是否自动启动
+function getAutoStartValue(name, callback) {
+  const key = this.getKey();
+  key.get(name, (error, result) => {
+    if (result) {
+      callback(null, result.value);
+    } else {
+      callback(error);
+    }
+  });
+}
+
+function enableAutoStart(name, file, callback) {
+  const key = getKey();
+  key.set(name, WinReg.REG_SZ, file, callback || (() => { }));
+}
+
+function disableAutoStart(name, callback) {
+  const key = getKey();
+  key.remove(name, callback || (() => { }));
+}
+
+ipcMain.on('enableAutoStart', (event, arg) => {
+  enableAutoStart('lposump', process.execPath);
+});
+
+ipcMain.on('disableAutoStart', (event, arg) => {
+  disableAutoStart('lposump');
+});

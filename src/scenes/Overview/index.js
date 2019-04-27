@@ -63,6 +63,7 @@ class Overview extends Component {
             <Row className={styles['select-plan']}>
               <span>切换方案：</span>
               <Select
+                size="large"
                 defaultValue={this.state.currentPlan.id}
                 style={{ width: 120 }}
                 onChange={this.setCurrentPlan}>
@@ -75,7 +76,7 @@ class Overview extends Component {
               <span>执行时间：{this.state.currentPlan.time}</span>
             </Row>
             <Row className={styles['start-plan']}>
-              <Button type="primary" onClick={this.startCurrentPlan}>马上执行</Button>
+              <Button type="primary" size="large" onClick={this.startCurrentPlan}>马上执行</Button>
             </Row>
           </Col>
         </Row>

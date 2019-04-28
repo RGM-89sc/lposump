@@ -107,7 +107,7 @@ class Application extends Component {
         <Row className={styles['app-list']}>
           {this.state.apps.length > 0 ? (
             this.state.apps.map(app => (
-              <Card className={styles.app} key={app.path}>
+              <Card hoverable className={styles.app} key={app.path}>
                 <Row className={styles['app-name']}>
                   <span style={{ float: 'left' }}>{app.name}</span>
                   <Button type="danger" ghost onClick={this.delApp.bind(this, app)}>删除</Button>

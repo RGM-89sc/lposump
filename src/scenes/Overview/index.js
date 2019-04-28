@@ -73,7 +73,7 @@ class Overview extends Component {
               </Select>
             </Row>
             <Row className={styles['plan-time']}>
-              <span>执行时间：{this.state.currentPlan.time}</span>
+              <span>执行时间：{this.state.currentPlan.time ? this.state.currentPlan.time : '--:--'}</span>
             </Row>
             <Row className={styles['start-plan']}>
               <Button type="primary" size="large" onClick={this.startCurrentPlan}>马上执行</Button>

@@ -72,7 +72,7 @@ class Plan extends Component {
   }
 
   addPlan() {
-    if (this.state.newPlanName && this.state.newPlanAppList.length > 0 && this.state.newPlanTimeString) {
+    if (this.state.newPlanName && this.state.newPlanAppList.length > 0) {
       const newPlanID = uuid().split('-').join('');
       this.setState({
         plans: [
@@ -94,7 +94,10 @@ class Plan extends Component {
           newPlanTimeString: '',
           addingPlan: false
         });
-        message.success('方案已添加，设置默认方案后将自动根据设定时间执行');
+        Modal.success({
+          title: '方案已添加',
+          content: '设置默认方案后将自动根据您所设定的时间执行',
+        });
       }, 0);
     } else {
       message.error('请先完成相关信息的填写');
@@ -154,10 +157,10 @@ class Plan extends Component {
               onCancel={() => { this.setState({ addingPlan: false }) }}
             >
               <Form layout="vertical">
-                <Form.Item label="方案名称：">
+                <Form.Item required label="方案名称：">
                   <Input placeholder="方案名称" value={this.state.newPlanName} onChange={this.changeNewPlanName} />
                 </Form.Item>
-                <Form.Item label="启动列表：">
+                <Form.Item required label="启动列表：">
                   <Select mode="multiple" value={this.state.newPlanAppList} onChange={this.changeNewPlanAPPList}>
                     {this.state.apps.map(app => (
                       <Select.Option value={JSON.stringify(app)} key={app.path}>{app.name}</Select.Option>
@@ -174,7 +177,7 @@ class Plan extends Component {
         <Row className={styles['plan-list']}>
           {this.state.plans.length > 0 ? (
             this.state.plans.map(plan => (
-              <Card className={styles.plan} key={plan.id}>
+              <Card hoverable className={styles.plan} key={plan.id}>
                 <Row className={styles['plan-name']}>
                   <span style={{ float: 'left' }}>{plan.name}</span>
                   <Button type="danger" ghost onClick={this.delPlan.bind(this, plan)}>删除</Button>

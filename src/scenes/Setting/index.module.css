@@ -1,0 +1,11 @@
+.setting-item {
+  margin-bottom: 3rem;
+}
+
+.item-label {
+  width: 150px;
+}
+
+.item-label, .item-control {
+  display: inline-block;
+}

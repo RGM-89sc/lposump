@@ -51,12 +51,17 @@ class App extends Component {
           clearInterval(this.state.timer);
           return null;
         }
+        if (!this.state.defaultPlan.time) {
+          clearInterval(this.state.timer);
+          return null;
+        }
         const now = new Date();
         const hours = now.getHours();
         const mins = now.getMinutes();
         const planTime = this.state.defaultPlan.time.split(':');
         if (hours > parseInt(planTime[0]) || mins > parseInt(planTime[1])) {
-          return clearInterval(this.state.timer);
+          clearInterval(this.state.timer);
+          return null;
         }
         const time = `${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}`;
         if (this.state.defaultPlan.time === time) {
